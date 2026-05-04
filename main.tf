@@ -37,7 +37,7 @@ resource "azurerm_linux_virtual_machine" "frontend" {
   name                = "frontend"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.frontend.id,
   ]
@@ -85,7 +85,7 @@ resource "azurerm_linux_virtual_machine" "mysql" {
   name                = "mysql"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.mysql.id,
   ]
@@ -133,7 +133,7 @@ resource "azurerm_linux_virtual_machine" "catalogue" {
   name                = "catalogue"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.catalogue.id,
   ]
@@ -180,7 +180,7 @@ resource "azurerm_linux_virtual_machine" "mongodb" {
   name                = "mongodb"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.mongodb.id,
   ]
@@ -227,7 +227,7 @@ resource "azurerm_linux_virtual_machine" "user" {
   name                = "user"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.user.id,
   ]
@@ -274,7 +274,7 @@ resource "azurerm_linux_virtual_machine" "valkey" {
   name                = "valkey"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.valkey.id,
   ]
@@ -321,7 +321,7 @@ resource "azurerm_linux_virtual_machine" "cart" {
   name                = "cart"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.cart.id,
   ]
@@ -368,7 +368,7 @@ resource "azurerm_linux_virtual_machine" "shipping" {
   name                = "shipping"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.shipping.id,
   ]
@@ -415,7 +415,7 @@ resource "azurerm_linux_virtual_machine" "rabbitmq" {
   name                = "rabbitmq"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.rabbitmq.id,
   ]
@@ -462,7 +462,7 @@ resource "azurerm_linux_virtual_machine" "payment" {
   name                = "payment"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.payment.id,
   ]
@@ -509,7 +509,7 @@ resource "azurerm_linux_virtual_machine" "orders" {
   name                = "orders"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.orders.id,
   ]
@@ -556,7 +556,7 @@ resource "azurerm_linux_virtual_machine" "ratings" {
   name                = "ratings"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  size                = "Standard_F2"
+  size                = "Standard B1s"
   network_interface_ids = [
     azurerm_network_interface.ratings.id,
   ]
