@@ -28,7 +28,7 @@ resource "azurerm_network_interface" "frontend" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "frontend_nic_nsg" {
   network_interface_id      = azurerm_network_interface.frontend.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -76,7 +76,7 @@ resource "azurerm_network_interface" "mysql" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "nysql_nic_nsg" {
   network_interface_id      = azurerm_network_interface.mysql.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -124,7 +124,7 @@ resource "azurerm_network_interface" "catalogue" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "catalogue_nic_nsg" {
   network_interface_id      = azurerm_network_interface.catalogue.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -171,7 +171,7 @@ resource "azurerm_network_interface" "mongodb" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "mongodb_nic_nsg" {
   network_interface_id      = azurerm_network_interface.mongodb.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -218,7 +218,7 @@ resource "azurerm_network_interface" "user" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "user_nic_nsg" {
   network_interface_id      = azurerm_network_interface.user.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -265,7 +265,7 @@ resource "azurerm_network_interface" "valkey" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "valkey_nic_nsg" {
   network_interface_id      = azurerm_network_interface.valkey.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -312,7 +312,7 @@ resource "azurerm_network_interface" "cart" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "cart_nic_nsg" {
   network_interface_id      = azurerm_network_interface.cart.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -359,7 +359,7 @@ resource "azurerm_network_interface" "shipping" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "shipping_nic_nsg" {
   network_interface_id      = azurerm_network_interface.shipping.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -406,7 +406,7 @@ resource "azurerm_network_interface" "rabbitmq" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "rabbitmq_nic_nsg" {
   network_interface_id      = azurerm_network_interface.rabbitmq.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -453,7 +453,7 @@ resource "azurerm_network_interface" "payment" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "payment_nic_nsg" {
   network_interface_id      = azurerm_network_interface.payment.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -500,7 +500,7 @@ resource "azurerm_network_interface" "orders" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "orders_nic_nsg" {
   network_interface_id      = azurerm_network_interface.orders.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -547,7 +547,7 @@ resource "azurerm_network_interface" "ratings" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "ratings_nic_nsg" {
   network_interface_id      = azurerm_network_interface.ratings.id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
