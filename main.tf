@@ -54,7 +54,7 @@ resource "azurerm_linux_virtual_machine" "frontend" {
 
 resource "azurerm_dns_a_record" "example" {
   name                = "frontend-dev"
-  zone_name           = naresh-training.com
+  zone_name           = "naresh-training.com"
   resource_group_name = "denmark-east"
   ttl                 = 300
   records             = [ azurerm_linux_virtual_machine.frontend.private_ip_address ]
