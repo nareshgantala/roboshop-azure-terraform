@@ -16,7 +16,7 @@ resource "azurerm_public_ip" "publicIp" {
 resource "azurerm_network_interface" "frontend" {
   name                = "frontend-nic"
   location            = "Denmark East"
-  resource_group_name = "Denmark East"
+  resource_group_name = "denmark-east"
   
 
   ip_configuration {
@@ -33,8 +33,8 @@ resource "azurerm_network_interface_security_group_association" "nic_nsg" {
 }
 
 resource "azurerm_linux_virtual_machine" "frontend" {
-  name                = "example-machine"
-  resource_group_name = "Denmark East"
+  name                = "frontend"
+  resource_group_name = "denmark-east"
   location            = "Denmark East"
   size                = "Standard_F2"
   network_interface_ids = [
@@ -55,7 +55,7 @@ resource "azurerm_linux_virtual_machine" "frontend" {
 resource "azurerm_dns_a_record" "example" {
   name                = "frontend-dev"
   zone_name           = naresh-training.com
-  resource_group_name = "Denmark East"
+  resource_group_name = "denmark-east"
   ttl                 = 300
   records             = [ azurerm_linux_virtual_machine.frontend.private_ip_address ]
 }
