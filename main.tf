@@ -72,7 +72,7 @@ resource "azurerm_network_interface" "mysql" {
     name                          = "mysql"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -120,7 +120,7 @@ resource "azurerm_network_interface" "catalogue" {
     name                          = "catalogue"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+   
   }
 }
 
@@ -167,7 +167,7 @@ resource "azurerm_network_interface" "mongodb" {
     name                          = "mongodb"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -214,7 +214,7 @@ resource "azurerm_network_interface" "user" {
     name                          = "user"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -261,7 +261,7 @@ resource "azurerm_network_interface" "valkey" {
     name                          = "valkey"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -308,7 +308,7 @@ resource "azurerm_network_interface" "cart" {
     name                          = "cart"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -355,7 +355,7 @@ resource "azurerm_network_interface" "shipping" {
     name                          = "shipping"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -402,7 +402,7 @@ resource "azurerm_network_interface" "rabbitmq" {
     name                          = "rabbitmq"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -449,7 +449,7 @@ resource "azurerm_network_interface" "payment" {
     name                          = "payment"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -496,7 +496,7 @@ resource "azurerm_network_interface" "orders" {
     name                          = "orders"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
@@ -543,7 +543,7 @@ resource "azurerm_network_interface" "ratings" {
     name                          = "ratings"
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.publicIp.id
+
   }
 }
 
