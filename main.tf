@@ -44,7 +44,7 @@ resource "azurerm_linux_virtual_machine" "frontend" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -92,7 +92,7 @@ resource "azurerm_linux_virtual_machine" "mysql" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -140,7 +140,7 @@ resource "azurerm_linux_virtual_machine" "catalogue" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -187,7 +187,7 @@ resource "azurerm_linux_virtual_machine" "mongodb" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -234,7 +234,7 @@ resource "azurerm_linux_virtual_machine" "user" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -281,7 +281,7 @@ resource "azurerm_linux_virtual_machine" "valkey" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -328,7 +328,7 @@ resource "azurerm_linux_virtual_machine" "cart" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -375,7 +375,7 @@ resource "azurerm_linux_virtual_machine" "shipping" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -422,7 +422,7 @@ resource "azurerm_linux_virtual_machine" "rabbitmq" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -469,7 +469,7 @@ resource "azurerm_linux_virtual_machine" "payment" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -516,7 +516,7 @@ resource "azurerm_linux_virtual_machine" "orders" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -563,7 +563,7 @@ resource "azurerm_linux_virtual_machine" "ratings" {
 
   admin_username = "devops"
   admin_password = "Devops@12345"
-
+  disable_password_authentication = false
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
