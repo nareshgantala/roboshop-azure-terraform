@@ -7,7 +7,7 @@ resource "azurerm_public_ip" "publicIp" {
   name                = "acceptanceTestPublicIp1"
   resource_group_name = "denmark-east"
   location            = "Denmark East"
-  allocation_method   = "static"
+  allocation_method   = "Static"
 
   tags = {
     environment = "devlopment"
