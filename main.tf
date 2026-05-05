@@ -18,6 +18,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_network_interface_security_group_association" "main" {
+  for_each = var.component
   network_interface_id      = azurerm_network_interface.main[each.key].id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
@@ -45,6 +46,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 }
 
 resource "azurerm_dns_a_record" "main" {
+  for_each = var.component
   name                = "${each.key}-dev"
   zone_name           = "naresh-training.com"
   resource_group_name = var.resource_group_name
