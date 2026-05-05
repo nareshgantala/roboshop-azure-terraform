@@ -11,24 +11,25 @@ resource "azurerm_network_interface" "main" {
   
 
   ip_configuration {
-    name                          = "each.key"
+    name                          = each.key
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "frontend_nic_nsg" {
-  network_interface_id      = azurerm_network_interface.each.key.id
+resource "azurerm_network_interface_security_group_association" "main" {
+  network_interface_id      = azurerm_network_interface.main[each.key].id
   network_security_group_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/networkSecurityGroups/allow-all"
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                = "each.key"
+  for_each = var.component
+  name                = each.key
   resource_group_name = var.resource_group_name
   location            = var.location
-  size                = "each.value"
+  size                = each.value
   network_interface_ids = [
-    azurerm_network_interface.frontend.id,
+    azurerm_network_interface.main[each.key].id,
   ]
 
   admin_username = "devops"
@@ -43,12 +44,12 @@ resource "azurerm_linux_virtual_machine" "main" {
 
 }
 
-resource "azurerm_dns_a_record" "frontend" {
-  name                = "frontend-dev"
+resource "azurerm_dns_a_record" "main" {
+  name                = "${each.key}-dev"
   zone_name           = "naresh-training.com"
   resource_group_name = var.resource_group_name
   ttl                 = 300
-  records             = [ azurerm_linux_virtual_machine.main.private_ip_address ]
+  records             = [ azurerm_linux_virtual_machine.main[each.key].private_ip_address ]
 }
 
 
