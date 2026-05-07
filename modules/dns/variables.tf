@@ -8,3 +8,7 @@ variable "component_name" {
 variable "record" {
   
 }
+
+variable "env" {
+  
+}
