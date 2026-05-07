@@ -20,6 +20,10 @@ resource "azurerm_linux_virtual_machine" "main" {
 
 resource "null_resource" "name" {
   depends_on = [ azurerm_linux_virtual_machine.main ]
+    # Changes to any instance of the cluster requires re-provisioning
+  triggers = {
+    cluster_instance_ids = azurerm_linux_virtual_machine.main.id
+  }
   connection {
       type = "ssh"
       user = "devops"
