@@ -88,7 +88,7 @@ resource "null_resource" "null_db" {
   "echo STARTED",
   "sudo dnf install git python3-pip -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible -y",
+  "sudo pip3.12 install ansible",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
@@ -117,7 +117,7 @@ resource "null_resource" "null_app" {
   "echo STARTED",
   "sudo dnf install git python3-pip -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible -y",
+  "sudo pip3.12 install ansible",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
@@ -145,7 +145,7 @@ resource "null_resource" "null_ui" {
   "echo STARTED",
   "sudo dnf install git python3-pip -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible -y",
+  "sudo pip3.12 install ansible",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
