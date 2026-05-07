@@ -1,9 +1,12 @@
+
+
 module "networking" { 
   for_each = var.components
   source = "./modules/networking"
   component_name = each.key
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location  
+  public_ip_enabled = each.key == "frontend"
 }
 
 module "db" {
