@@ -22,12 +22,12 @@ resource "null_resource" "name" {
   depends_on = [ azurerm_linux_virtual_machine.main ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    cluster_instance_ids = azurerm_linux_virtual_machine.main.id
+    cluster_instance_ids = timestamp()
   }
   connection {
       type = "ssh"
       user = "devops"
-      password = "DevOps@12345"
+      password = "Devops@12345"
       host = azurerm_linux_virtual_machine.main.private_ip_address
   }
 
