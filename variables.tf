@@ -46,3 +46,7 @@ variable "components" {
     rabbitmq = "Standard_B1s"
   }
 }
+
+variable "env" {
+  
+}

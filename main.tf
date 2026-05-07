@@ -22,6 +22,7 @@ module "dns" {
   resource_group_name = data.azurerm_resource_group.rsg.name
   component_name = each.key 
   record = module.vm[each.key].private_ip
+  env = var.env
 }
 
 
