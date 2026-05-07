@@ -27,7 +27,7 @@ resource "null_resource" "name" {
   connection {
       type = "ssh"
       user = "devops"
-      password = "DevOps@123456"
+      password = "DevOps@12345"
       host = azurerm_linux_virtual_machine.main.private_ip_address
   }
 
