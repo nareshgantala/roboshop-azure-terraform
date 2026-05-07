@@ -13,6 +13,6 @@ resource "azurerm_linux_virtual_machine" "main" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-  source_image_id = data.azurerm_images.img.id
+  source_image_id = data.azurerm_image.img.id
 
 }
