@@ -64,3 +64,88 @@ module "dns_ui" {
   record = module.ui[each.key].private_ip
   env = var.env
 }
+
+resource "null_resource" "null_db" {
+  for_each = var.db
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+    # Changes to any instance of the cluster requires re-provisioning
+  triggers = {
+    cluster_instance_ids = timestamp()
+  }
+  connection {
+      type = "ssh"
+      user = "devops"
+      password = "Devops@12345"
+      host = module.db[each.key].private_ip
+  }
+
+  provisioner "remote-exec" {
+    # Bootstrap script called with private_ip of each node in the clutser
+  inline = [
+  "echo STARTED",
+  "sudo dnf install git python3-pip -y",
+  "echo GIT_DONE",
+  "python3 -m pip install ansible",
+  "echo ANSIBLE_DONE",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
+  "echo PULL_DONE"
+]
+  }
+}
+
+
+resource "null_resource" "null_app" {
+  for_each = var.app
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+    # Changes to any instance of the cluster requires re-provisioning
+  triggers = {
+    cluster_instance_ids = timestamp()
+  }
+  connection {
+      type = "ssh"
+      user = "devops"
+      password = "Devops@12345"
+      host = module.app[each.key].private_ip
+  }
+
+  provisioner "remote-exec" {
+    # Bootstrap script called with private_ip of each node in the clutser
+  inline = [
+  "echo STARTED",
+  "sudo dnf install git python3-pip -y",
+  "echo GIT_DONE",
+  "python3 -m pip install ansible",
+  "echo ANSIBLE_DONE",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
+  "echo PULL_DONE"
+]
+  }
+}
+
+resource "null_resource" "null_ui" {
+  for_each = var.ui
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+    # Changes to any instance of the cluster requires re-provisioning
+  triggers = {
+    cluster_instance_ids = timestamp()
+  }
+  connection {
+      type = "ssh"
+      user = "devops"
+      password = "Devops@12345"
+      host = module.ui[each.key].private_ip
+  }
+
+  provisioner "remote-exec" {
+    # Bootstrap script called with private_ip of each node in the clutser
+  inline = [
+  "echo STARTED",
+  "sudo dnf install git python3-pip -y",
+  "echo GIT_DONE",
+  "sudo python3 -m pip install ansible -y",
+  "echo ANSIBLE_DONE",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
+  "echo PULL_DONE"
+]
+  }
+}
