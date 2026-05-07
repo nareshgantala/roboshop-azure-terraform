@@ -19,6 +19,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 
 
 resource "null_resource" "name" {
+  depends_on = [ azurerm_linux_virtual_machine.main ]
   connection {
       type = "ssh"
       user = "devops"
