@@ -86,8 +86,6 @@ resource "null_resource" "null_db" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60",
-  "sudo cloud-init status --wait || true",
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
@@ -96,6 +94,7 @@ inline = [
 
 
 resource "null_resource" "null_app" {
+  
   for_each = var.app
   depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
     # Changes to any instance of the cluster requires re-provisioning
@@ -113,8 +112,6 @@ resource "null_resource" "null_app" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60",
-  "sudo cloud-init status --wait || true",
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
@@ -139,8 +136,6 @@ resource "null_resource" "null_ui" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60",
-  "sudo cloud-init status --wait || true",
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
