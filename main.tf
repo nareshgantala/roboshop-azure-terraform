@@ -84,12 +84,11 @@ resource "null_resource" "null_db" {
 
   provisioner "remote-exec" {
     # Bootstrap script called with private_ip of each node in the clutser
-  inline = [
-  "echo STARTED",
-  "sudo dnf install ansible-core -y",
-  "echo ANSIBLE_DONE",
-  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
-  "echo PULL_DONE"
+inline = [
+  "set -e",
+  "sudo cloud-init status --wait || true",
+  "sudo dnf install ansible-core git -y",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
   }
 }
@@ -111,12 +110,11 @@ resource "null_resource" "null_app" {
 
   provisioner "remote-exec" {
     # Bootstrap script called with private_ip of each node in the clutser
-  inline = [
-  "echo STARTED",
-  "sudo dnf install ansible-core -y",
-  "echo ANSIBLE_DONE",
-  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
-  "echo PULL_DONE"
+inline = [
+  "set -e",
+  "sudo cloud-init status --wait || true",
+  "sudo dnf install ansible-core git -y",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
   }
 }
@@ -137,12 +135,11 @@ resource "null_resource" "null_ui" {
 
   provisioner "remote-exec" {
     # Bootstrap script called with private_ip of each node in the clutser
-  inline = [
-  "echo STARTED",
-  "sudo dnf install ansible-core -y",
-  "echo ANSIBLE_DONE",
-  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
-  "echo PULL_DONE"
+inline = [
+  "set -e",
+  "sudo cloud-init status --wait || true",
+  "sudo dnf install ansible-core git -y",
+  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
   }
 }
