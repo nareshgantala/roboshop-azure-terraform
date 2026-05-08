@@ -86,9 +86,9 @@ resource "null_resource" "null_db" {
     # Bootstrap script called with private_ip of each node in the clutser
   inline = [
   "echo STARTED",
-  "sudo dnf install git python3-pip -y",
+  "sudo dnf install git -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible",
+  "sudo dnf install ansible git -y",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
@@ -115,9 +115,9 @@ resource "null_resource" "null_app" {
     # Bootstrap script called with private_ip of each node in the clutser
   inline = [
   "echo STARTED",
-  "sudo dnf install git python3-pip -y",
+  "sudo dnf install git -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible",
+  "sudo dnf install ansible git -y",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
@@ -143,9 +143,9 @@ resource "null_resource" "null_ui" {
     # Bootstrap script called with private_ip of each node in the clutser
   inline = [
   "echo STARTED",
-  "sudo dnf install git python3-pip -y",
+  "sudo dnf install git -y",
   "echo GIT_DONE",
-  "sudo pip3.12 install ansible",
+  "sudo dnf install ansible git -y",
   "echo ANSIBLE_DONE",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=dev",
   "echo PULL_DONE"
