@@ -10,7 +10,7 @@ variable "component_name" {
   
 }
 
-variable "public_ip_enabled" {
-  default = false
-  type = bool
-}
+# variable "public_ip_enabled" {
+#   default = false
+#   type = bool
+# }

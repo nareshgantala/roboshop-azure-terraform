@@ -6,7 +6,7 @@ module "networking" {
   component_name = each.key
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location  
-  public_ip_enabled = each.key == "frontend"
+  # public_ip_enabled = each.key == "frontend"
 }
 
 module "db" {

@@ -8,7 +8,7 @@ resource "azurerm_network_interface" "main" {
     name                          = var.component_name
     subnet_id                     = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Network/virtualNetworks/test-virtual-network/subnets/default"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = var.public_ip_enabled ? azurerm_public_ip.main[0].id : null
+    public_ip_address_id = azurerm_public_ip.id
   }
 }
 
@@ -18,7 +18,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_public_ip" "main" {
-  count = var.public_ip_enabled ? 1 : 0
+  # count = var.public_ip_enabled ? 1 : 0
 
   name                = "${var.component_name}-pip"
   location            = var.location
