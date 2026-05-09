@@ -12,6 +12,7 @@ module "networking" {
 
 module "db" {
   for_each = var.db   
+  depends_on = [ module.networking ]
   source = "./modules/vm"
   component_name =each.key 
   resource_group_name = data.azurerm_resource_group.rsg.name
@@ -21,7 +22,7 @@ module "db" {
 }
 
 module "app" {
-  depends_on = [ module.db ]
+  depends_on = [ module.db, module.networking ]
   for_each = var.app   
   source = "./modules/vm"
   component_name =each.key 
@@ -32,7 +33,7 @@ module "app" {
 }
 
 module "ui" {
-  depends_on = [ module.app ]
+  depends_on = [ module.app, module.networking ]
   for_each = var.ui   
   source = "./modules/vm"
   component_name =each.key 
@@ -83,7 +84,7 @@ resource "azurerm_subnet_nat_gateway_association" "example" {
 
 resource "null_resource" "null_db" {
   for_each = var.db
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = timestamp()
@@ -109,7 +110,7 @@ inline = [
 resource "null_resource" "null_app" {
   
   for_each = var.app
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = timestamp()
@@ -133,7 +134,7 @@ inline = [
 
 resource "null_resource" "null_ui" {
   for_each = var.ui
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
+  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = timestamp()
