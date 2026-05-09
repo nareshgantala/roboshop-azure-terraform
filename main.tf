@@ -114,7 +114,7 @@ resource "azurerm_nat_gateway_public_ip_association" "nat_assoc" {
   public_ip_address_id = azurerm_public_ip.nat_pip.id
 }
 
-resource "null_resource" "name" {
+resource "null_resource" "file" {
     provisioner "file" {
     source      = "./requirements.yml"
     destination = "/home/devops/requirements.yml"
@@ -130,7 +130,7 @@ resource "null_resource" "name" {
 
 resource "null_resource" "null_db_mysql" {
   for_each = var.mysql
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+  depends_on = [ null_resource.file, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = timestamp()
