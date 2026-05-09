@@ -56,7 +56,7 @@ module "dns_mysql" {
   source = "./modules/dns"
   resource_group_name = data.azurerm_resource_group.rsg.name
   component_name = each.key 
-  record = module.db[each.key].private_ip
+  record = module.db_mysql[each.key].private_ip
   env = var.env
 }
 
