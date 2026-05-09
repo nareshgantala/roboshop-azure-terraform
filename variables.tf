@@ -1,11 +1,14 @@
 variable "resource_group_name" {
   default = "denmark-east"
 }
-
+variable "mysql" {
+  default = {
+    mysql = "Standard_B1s"
+  }
+}
 
 variable "db" {
   default = {
-    mysql = "Standard_B1s"
     mongodb = "Standard_B1s"
     valkey = "Standard_B1s"
     rabbitmq = "Standard_B1s"
