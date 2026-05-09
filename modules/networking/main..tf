@@ -27,14 +27,3 @@ resource "azurerm_public_ip" "main" {
   allocation_method = "Static"
 }
 
-resource "azurerm_nat_gateway" "nat" {
-  name                    = "nat-gateway"
-  location                = var.location
-  resource_group_name     = var.resource_group_name   
-  sku_name                = "Standard"
-}
-
-resource "azurerm_subnet_nat_gateway_association" "example" {
-  subnet_id      = data.azurerm_subnet.default_subnet.id
-  nat_gateway_id = azurerm_nat_gateway.nat.id
-}

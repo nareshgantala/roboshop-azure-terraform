@@ -68,6 +68,18 @@ module "dns_ui" {
   env = var.env
 }
 
+resource "azurerm_nat_gateway" "nat" {
+  name                    = "nat-gateway"
+  location                = data.azurerm_resource_group.rsg.location
+  resource_group_name     = var.resource_group_name   
+  sku_name                = "Standard"
+}
+
+resource "azurerm_subnet_nat_gateway_association" "example" {
+  subnet_id      = data.azurerm_subnet.default_subnet.id
+  nat_gateway_id = azurerm_nat_gateway.nat.id
+}
+
 resource "null_resource" "null_db" {
   for_each = var.db
   depends_on = [ module.dns_app, module.dns_db, module.dns_ui ]
