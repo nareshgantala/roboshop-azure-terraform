@@ -70,6 +70,7 @@ module "dns_ui" {
   env = var.env
 }
 
+
 resource "azurerm_nat_gateway" "nat" {
   name                    = "nat-gateway"
   location                = data.azurerm_resource_group.rsg.location
@@ -80,6 +81,20 @@ resource "azurerm_nat_gateway" "nat" {
 resource "azurerm_subnet_nat_gateway_association" "example" {
   subnet_id      = data.azurerm_subnet.default_subnet.id
   nat_gateway_id = azurerm_nat_gateway.nat.id
+}
+# 1. Create the Public IP for the NAT Gateway
+resource "azurerm_public_ip" "nat_pip" {
+  name                = "nat-gateway-pip"
+  location            = data.azurerm_resource_group.rsg.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard" # Must be Standard to work with NAT Gateway
+}
+
+# 2. Associate the Public IP with the NAT Gateway
+resource "azurerm_nat_gateway_public_ip_association" "nat_assoc" {
+  nat_gateway_id       = azurerm_nat_gateway.nat.id
+  public_ip_address_id = azurerm_public_ip.nat_pip.id
 }
 
 resource "null_resource" "null_db" {
