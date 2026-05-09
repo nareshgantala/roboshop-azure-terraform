@@ -139,7 +139,7 @@ resource "null_resource" "null_db_mysql" {
       type = "ssh"
       user = "devops"
       password = "Devops@12345"
-      host = module.db[each.key].private_ip
+      host = module.db_mysql["mysql"].private_ip
   }
 
   provisioner "remote-exec" {
