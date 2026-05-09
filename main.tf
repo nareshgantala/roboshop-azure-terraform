@@ -147,6 +147,7 @@ resource "null_resource" "null_db_mysql" {
 inline = [
   "set -e",
   "sudo dnf install ansible-core git -y",
+  "sudo pip3 install PyMySQL",
   "ansible-galaxy collection install -r /home/devops/requirements.yml",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
