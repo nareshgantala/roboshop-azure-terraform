@@ -8,7 +8,7 @@ resource "azurerm_network_interface" "main" {
     name                          = var.component_name
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.main.id
+    public_ip_address_id = var.public_ip_enabled ? azurerm_public_ip.main[0].id: null
   }
 }
 
@@ -18,7 +18,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_public_ip" "main" {
-  # count = var.public_ip_enabled ? 1 : 0
+  count = var.public_ip_enabled ? 1 : 0
 
   name                = "${var.component_name}-pip"
   location            = var.location

@@ -51,7 +51,7 @@ variable "env" {
   
 }
 
-# variable "public_ip_enabled" {
-#   type    = bool
-#   default = false
-# }
+variable "public_ip_enabled" {
+  type    = bool
+  default = false
+}
