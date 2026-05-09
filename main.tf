@@ -115,7 +115,6 @@ resource "null_resource" "null_db" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60", 
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
@@ -142,7 +141,6 @@ resource "null_resource" "null_app" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60", 
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
@@ -167,7 +165,6 @@ resource "null_resource" "null_ui" {
     # Bootstrap script called with private_ip of each node in the clutser
 inline = [
   "set -e",
-  "sleep 60", 
   "sudo dnf install ansible-core git -y",
   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
 ]
