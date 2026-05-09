@@ -97,6 +97,20 @@ resource "azurerm_nat_gateway_public_ip_association" "nat_assoc" {
   public_ip_address_id = azurerm_public_ip.nat_pip.id
 }
 
+resource "null_resource" "name" {
+    provisioner "file" {
+    source      = "./requirements.yml"
+    destination = "/home/devops/requirements.yml"
+
+    connection {
+        type     = "ssh"
+        user     = "devops"
+        password = "Devops@12345"
+        host     = module.db.mysql_ip
+    }
+    }
+}
+
 resource "null_resource" "null_db" {
   for_each = var.db
   depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
