@@ -55,3 +55,7 @@ variable "env" {
 #   type    = bool
 #   default = false
 # }
+
+variable "subnet_id" {
+  
+}

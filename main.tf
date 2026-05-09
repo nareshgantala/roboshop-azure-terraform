@@ -3,6 +3,7 @@
 module "networking" { 
   for_each = var.components
   source = "./modules/networking"
+  subnet_id      = data.azurerm_subnet.default_subnet.id
   component_name = each.key
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location  

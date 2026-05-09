@@ -14,3 +14,7 @@ variable "component_name" {
 #   default = false
 #   type = bool
 # }
+
+variable "subnet_id" {
+  
+}
