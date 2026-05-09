@@ -181,7 +181,7 @@ inline = [
 resource "null_resource" "null_app" {
   
   for_each = var.app
-  depends_on = [ null_resource.null_db, module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+  depends_on = [ null_resource.null_db_mysql, module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = timestamp()
