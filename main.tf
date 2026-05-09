@@ -106,7 +106,7 @@ resource "null_resource" "name" {
         type     = "ssh"
         user     = "devops"
         password = "Devops@12345"
-        host     = module.db.mysql_ip
+        host     = module.db["mysql"].mysql_ip
     }
     }
 }

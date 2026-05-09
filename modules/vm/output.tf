@@ -3,5 +3,5 @@ output "private_ip" {
 }
 
 output "mysql_ip" {
-  value = azurerm_linux_virtual_machine.main["mysql"].private_ip_address
+  value = azurerm_linux_virtual_machine.main.private_ip_address
 }
