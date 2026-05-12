@@ -16,3 +16,7 @@ variable "size" {
 variable "nic_id" {
   
 }
+
+variable "tags" {
+  
+}

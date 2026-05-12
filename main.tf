@@ -14,6 +14,7 @@ module "db_mysql" {
   depends_on = [ module.networking ]
   source = "./modules/vm"
   component_name =each.key 
+  tags = local.common_tags
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
@@ -24,6 +25,7 @@ module "db" {
   depends_on = [ module.networking ]
   source = "./modules/vm"
   component_name =each.key 
+  tags = local.common_tags
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
@@ -35,6 +37,7 @@ module "app" {
   for_each = var.app   
   source = "./modules/vm"
   component_name =each.key 
+  tags = local.common_tags
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
@@ -46,6 +49,7 @@ module "ui" {
   for_each = var.ui   
   source = "./modules/vm"
   component_name =each.key 
+  tags = local.common_tags
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   size = each.value 

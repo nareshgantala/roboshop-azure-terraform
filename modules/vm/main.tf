@@ -14,6 +14,7 @@ resource "azurerm_linux_virtual_machine" "main" {
     storage_account_type = "Standard_LRS"
   }
   source_image_id = data.azurerm_shared_image_version.img.id
+  tags = var.tags
 
 }
 
