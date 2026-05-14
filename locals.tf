@@ -1,8 +1,7 @@
 locals {
   project = "roboshop"
-  name_prefix = "local.project-${var.env}-${each.key}"
   common_tags = {
-    name = local.name_prefix
+    name = local.project
     env = var.env
   }
 }
