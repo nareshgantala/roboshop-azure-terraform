@@ -68,7 +68,7 @@ resource "azurerm_lb_backend_address_pool" "app_pool" {
 
 resource "azurerm_lb_probe" "http_app" {
   count = var.component_type == "app" ? 1: 0
-  loadbalancer_id     = azurerm_lb.main_ui[count.index].id
+  loadbalancer_id     = azurerm_lb.main_app[count.index].id
   name                = "http-running-probe"
   port                = var.port
   protocol            = "Tcp"
