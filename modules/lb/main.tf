@@ -25,12 +25,13 @@ resource "azurerm_lb_backend_address_pool" "ui_pool" {
 }
 
 resource "azurerm_lb_rule" "ui_rule" {
+  count = var.component_type == "ui" ? 1: 0
   loadbalancer_id                = azurerm_lb.main_ui.id
   name                           = "${var.component_name}-${var.env}"
   protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 3389
-  frontend_ip_configuration_name = "PublicIPAddress"
+  frontend_port                  = var.port
+  backend_port                   = var.port
+  frontend_ip_configuration_name = "${var.component_name}-${var.env}"
 }
 
 resource "azurerm_lb" "main_app" {
@@ -50,4 +51,14 @@ resource "azurerm_lb_backend_address_pool" "app_pool" {
   count = var.component_type == "app" ? 1: 0
   loadbalancer_id = azurerm_lb.main_app.id
   name            = "${var.component_name}-${var.env}"
+}
+
+resource "azurerm_lb_rule" "ui_rule" {
+  count = var.component_type == "ui" ? 1: 0
+  loadbalancer_id                = azurerm_lb.main_app.id
+  name                           = "${var.component_name}-${var.env}"
+  protocol                       = "Tcp"
+  frontend_port                  = var.port
+  backend_port                   = var.port
+  frontend_ip_configuration_name = "${var.component_name}-${var.env}"
 }

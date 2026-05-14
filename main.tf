@@ -105,10 +105,11 @@ module "lb_app" {
   env = var.env
   location = data.azurerm_resource_group.rsg.location
   component_type = "app"
+  port =val.var.port == each.value["port"]
 }
 
 module "lb_ui" {
-  for_each = var.app
+  for_each = var.ui
   source = "./modules/lb"
   subnet_id = data.azurerm_subnet.default_subnet.id
   resource_group_name = data.azurerm_resource_group.rsg.name
@@ -116,6 +117,7 @@ module "lb_ui" {
   env = var.env
   location = data.azurerm_resource_group.rsg.location
   component_type = "ui"
+  port =val.var.port == each.value["port"]
 }
 
 

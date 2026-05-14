@@ -21,3 +21,7 @@ variable "subnet_id" {
 variable "component_type" {
   
 }
+
+variable "port" {
+  
+}
