@@ -54,7 +54,7 @@ module "ui" {
   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
-  size = each.value 
+  size = each.value["size"]
   nic_id = module.networking[each.key].nid
   env = var.env
 }
