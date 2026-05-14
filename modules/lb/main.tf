@@ -13,7 +13,7 @@ resource "azurerm_lb" "main_ui" {
 
   frontend_ip_configuration {
     name = "${var.component_name}-${var.env}"
-    public_ip_address_id = azurerm_public_ip.lb_pip[count.index].id
+    public_ip_address_id = azurerm_public_ip.lb_pip.id
 
   }
 }
