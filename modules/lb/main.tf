@@ -13,20 +13,20 @@ resource "azurerm_lb" "main_ui" {
 
   frontend_ip_configuration {
     name = "${var.component_name}-${var.env}"
-    public_ip_address_id = azurerm_public_ip.lb_pip.id
+    public_ip_address_id = azurerm_public_ip.lb_pip[count.index].id
 
   }
 }
 
 resource "azurerm_lb_backend_address_pool" "ui_pool" {
   count = var.component_type == "ui" ? 1: 0
-  loadbalancer_id = azurerm_lb.main_ui.id
+  loadbalancer_id = azurerm_lb.main_ui[count.index].id
   name            = "${var.component_name}-${var.env}"
 }
 
 resource "azurerm_lb_rule" "ui_rule" {
   count = var.component_type == "ui" ? 1: 0
-  loadbalancer_id                = azurerm_lb.main_ui.id
+  loadbalancer_id                = azurerm_lb.main_ui[count.index].id
   name                           = "${var.component_name}-${var.env}"
   protocol                       = "Tcp"
   frontend_port                  = var.port
@@ -49,13 +49,13 @@ resource "azurerm_lb" "main_app" {
 
 resource "azurerm_lb_backend_address_pool" "app_pool" {
   count = var.component_type == "app" ? 1: 0
-  loadbalancer_id = azurerm_lb.main_app.id
+  loadbalancer_id = azurerm_lb.main_app[count.index].id
   name            = "${var.component_name}-${var.env}"
 }
 
 resource "azurerm_lb_rule" "app_rule" {
   count = var.component_type == "app" ? 1: 0
-  loadbalancer_id                = azurerm_lb.main_app.id
+  loadbalancer_id                = azurerm_lb.main_app[count.index].id
   name                           = "${var.component_name}-${var.env}"
   protocol                       = "Tcp"
   frontend_port                  = var.port
