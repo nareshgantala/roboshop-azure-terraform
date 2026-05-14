@@ -8,6 +8,7 @@ module "networking" {
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location  
   public_ip_enabled = each.key == "frontend"
+  env = var.env
 }
 module "db_mysql" {
   for_each = var.mysql   
@@ -19,6 +20,7 @@ module "db_mysql" {
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
   nic_id = module.networking[each.key].nid
+  env = var.env
 }
 module "db" {
   for_each = var.db   
@@ -30,6 +32,7 @@ module "db" {
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
   nic_id = module.networking[each.key].nid
+  env = var.env
 }
 
 module "app" {
@@ -42,6 +45,7 @@ module "app" {
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
   nic_id = module.networking[each.key].nid
+  env = var.env
 }
 
 module "ui" {
@@ -54,6 +58,7 @@ module "ui" {
   location = data.azurerm_resource_group.rsg.location
   size = each.value 
   nic_id = module.networking[each.key].nid
+  env = var.env
 }
 module "dns_mysql" {
   for_each = var.mysql
@@ -89,6 +94,17 @@ module "dns_ui" {
   component_name = each.key 
   record = module.ui[each.key].private_ip
   env = var.env
+}
+
+module "lb" {
+  for_each = var.app
+  source = "./modules/lb"
+  subnet_id = data.azurerm_subnet.default_subnet.id
+  resource_group_name = data.azurerm_resource_group.rsg.name
+  component_name = each.key
+  env = var.env
+  location = data.azurerm_resource_group.rsg.location
+  component_type = "app"
 }
 
 

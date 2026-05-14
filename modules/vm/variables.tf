@@ -17,6 +17,10 @@ variable "nic_id" {
   
 }
 
+variable "env" {
+  
+}
+
 variable "tags" {
   
 }

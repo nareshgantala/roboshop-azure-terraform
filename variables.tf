@@ -58,3 +58,7 @@ variable "public_ip_enabled" {
   type    = bool
   default = false
 }
+
+variable "component_type" {
+  
+}

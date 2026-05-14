@@ -18,3 +18,8 @@ variable "public_ip_enabled" {
 variable "subnet_id" {
   
 }
+
+
+variable "env" {
+  
+}
