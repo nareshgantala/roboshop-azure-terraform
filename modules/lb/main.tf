@@ -53,8 +53,8 @@ resource "azurerm_lb_backend_address_pool" "app_pool" {
   name            = "${var.component_name}-${var.env}"
 }
 
-resource "azurerm_lb_rule" "ui_rule" {
-  count = var.component_type == "ui" ? 1: 0
+resource "azurerm_lb_rule" "app_rule" {
+  count = var.component_type == "app" ? 1: 0
   loadbalancer_id                = azurerm_lb.main_app.id
   name                           = "${var.component_name}-${var.env}"
   protocol                       = "Tcp"
