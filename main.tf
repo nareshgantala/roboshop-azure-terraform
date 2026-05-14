@@ -104,6 +104,7 @@ module "lb_app" {
   location = data.azurerm_resource_group.rsg.location
   component_type = "app"
   port = each.value["port"]
+  nic_id = module.networking[each.key].nid
 }
 
 module "lb_ui" {
@@ -116,6 +117,7 @@ module "lb_ui" {
   location = data.azurerm_resource_group.rsg.location
   component_type = "ui"
   port = each.value["port"]
+  nic_id = module.networking[each.key].nid
 }
 
 

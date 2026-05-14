@@ -62,3 +62,17 @@ resource "azurerm_lb_rule" "app_rule" {
   backend_port                   = var.port
   frontend_ip_configuration_name = "${var.component_name}-${var.env}"
 }
+
+resource "azurerm_network_interface_backend_address_pool_association" "ui" {
+  count = var.component_type == "ui" ? 1: 0
+  network_interface_id    = nic_id
+  ip_configuration_name   = "${var.component_name}-${var.env}"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.ui_pool.id
+}
+
+resource "azurerm_network_interface_backend_address_pool_association" "app" {
+  count = var.component_type == "app" ? 1: 0
+  network_interface_id    = var.nic_id
+  ip_configuration_name   = "${var.component_name}-${var.env}"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.app_pool.id
+}

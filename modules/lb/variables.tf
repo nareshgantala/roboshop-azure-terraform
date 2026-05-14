@@ -25,3 +25,7 @@ variable "component_type" {
 variable "port" {
   
 }
+
+variable "nic_id" {
+  
+}
