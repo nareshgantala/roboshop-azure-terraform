@@ -96,7 +96,7 @@ module "dns_ui" {
   env = var.env
 }
 
-module "lb" {
+module "lb_app" {
   for_each = var.app
   source = "./modules/lb"
   subnet_id = data.azurerm_subnet.default_subnet.id
@@ -105,6 +105,17 @@ module "lb" {
   env = var.env
   location = data.azurerm_resource_group.rsg.location
   component_type = "app"
+}
+
+module "lb_ui" {
+  for_each = var.app
+  source = "./modules/lb"
+  subnet_id = data.azurerm_subnet.default_subnet.id
+  resource_group_name = data.azurerm_resource_group.rsg.name
+  component_name = each.key
+  env = var.env
+  location = data.azurerm_resource_group.rsg.location
+  component_type = "ui"
 }
 
 
