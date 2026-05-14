@@ -32,7 +32,18 @@ resource "azurerm_lb_rule" "ui_rule" {
   protocol                       = "Tcp"
   frontend_port                  = var.port
   backend_port                   = var.port
+  probe_id                       = azurerm_lb_probe.http_ui[count.index].id
   frontend_ip_configuration_name = "${var.component_name}-${var.env}"
+}
+
+resource "azurerm_lb_probe" "http_ui" {
+  count = var.component_type == "ui" ? 1: 0
+  loadbalancer_id     = azurerm_lb.main_ui[count.index].id
+  name                = "http-running-probe"
+  port                = var.port
+  protocol            = "Tcp"
+  interval_in_seconds = 5
+  number_of_probes    = 2
 }
 
 resource "azurerm_lb" "main_app" {
@@ -54,6 +65,17 @@ resource "azurerm_lb_backend_address_pool" "app_pool" {
   name            = "${var.component_name}-${var.env}"
 }
 
+
+resource "azurerm_lb_probe" "http_app" {
+  count = var.component_type == "app" ? 1: 0
+  loadbalancer_id     = azurerm_lb.main_ui[count.index].id
+  name                = "http-running-probe"
+  port                = var.port
+  protocol            = "Tcp"
+  interval_in_seconds = 5
+  number_of_probes    = 2
+}
+
 resource "azurerm_lb_rule" "app_rule" {
   count = var.component_type == "app" ? 1: 0
   loadbalancer_id                = azurerm_lb.main_app[count.index].id
@@ -61,6 +83,7 @@ resource "azurerm_lb_rule" "app_rule" {
   protocol                       = "Tcp"
   frontend_port                  = var.port
   backend_port                   = var.port
+  probe_id = azurerm_lb_probe.http_app[count.index].id
   frontend_ip_configuration_name = "${var.component_name}-${var.env}"
 }
 
