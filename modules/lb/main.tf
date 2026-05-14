@@ -1,4 +1,5 @@
 resource "azurerm_public_ip" "lb_pip" {
+  count = var.component_type == "ui" ? 1: 0
   name                =  "${var.component_name}-${var.env}-lb_ip"
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -13,7 +14,7 @@ resource "azurerm_lb" "main_ui" {
 
   frontend_ip_configuration {
     name = "${var.component_name}-${var.env}"
-    public_ip_address_id = azurerm_public_ip.lb_pip.id
+    public_ip_address_id = azurerm_public_ip.lb_pip[count.index].id
 
   }
 }
@@ -67,12 +68,12 @@ resource "azurerm_network_interface_backend_address_pool_association" "ui" {
   count = var.component_type == "ui" ? 1: 0
   network_interface_id    = nic_id
   ip_configuration_name   = "${var.component_name}-${var.env}"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.ui_pool.id
+  backend_address_pool_id = azurerm_lb_backend_address_pool.ui_pool[count.index].id
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "app" {
   count = var.component_type == "app" ? 1: 0
   network_interface_id    = var.nic_id
   ip_configuration_name   = "${var.component_name}-${var.env}"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.app_pool.id
+  backend_address_pool_id = azurerm_lb_backend_address_pool.app_pool[count.index].id
 }
