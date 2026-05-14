@@ -166,7 +166,7 @@ resource "null_resource" "null_db_mysql" {
   depends_on = [ null_resource.file, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    cluster_instance_ids = module.db_mysql.private_ip
+    cluster_instance_ids = module.db_mysql[each.key].private_ip
   }
   connection {
       type = "ssh"
@@ -192,7 +192,7 @@ resource "null_resource" "null_db" {
   depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    cluster_instance_ids = module.db.private_ip
+    cluster_instance_ids = module.db[each.key].private_ip
   }
   connection {
       type = "ssh"
@@ -218,7 +218,7 @@ resource "null_resource" "null_app" {
   depends_on = [ null_resource.null_db_mysql, module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    cluster_instance_ids = module.app.private_ip
+    cluster_instance_ids = module.app[each.key].private_ip
   }
   connection {
       type = "ssh"
@@ -242,7 +242,7 @@ resource "null_resource" "null_ui" {
   depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    cluster_instance_ids = module.ui.private_ip
+    cluster_instance_ids = module.ui[each.key].private_ip
   }
   connection {
       type = "ssh"
