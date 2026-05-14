@@ -105,7 +105,7 @@ module "lb_app" {
   env = var.env
   location = data.azurerm_resource_group.rsg.location
   component_type = "app"
-  port =val.var.port == each.value["port"]
+  port = each.value["port"]
 }
 
 module "lb_ui" {
@@ -117,7 +117,7 @@ module "lb_ui" {
   env = var.env
   location = data.azurerm_resource_group.rsg.location
   component_type = "ui"
-  port =val.var.port == each.value["port"]
+  port = each.value["port"]
 }
 
 
