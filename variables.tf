@@ -83,10 +83,10 @@ variable "public_ip_enabled" {
   default = false
 }
 
-variable "component_type" {
-  
-}
+# variable "component_type" {
+#   default = null
+# }
 
-variable "port" {
+# variable "port" {
   
-}
+# }
