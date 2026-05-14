@@ -44,7 +44,7 @@ resource "azurerm_lb" "main_app" {
   frontend_ip_configuration {
     name = "${var.component_name}-${var.env}"
     subnet_id = var.subnet_id
-    private_ip_address_allocation = "Static"
+    private_ip_address_allocation = "Dynamic"
   }
 }
 
