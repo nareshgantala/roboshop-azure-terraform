@@ -7,6 +7,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   admin_username      = "devops"
   admin_password      = "Devops@12345"
   disable_password_authentication = false
+  secure_boot_enabled = true
+  vtpm_enabled        = true
+  
 
 
   source_image_id     = var.img_id
