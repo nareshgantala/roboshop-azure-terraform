@@ -81,7 +81,7 @@ module "dns_app" {
   source = "./modules/dns"
   resource_group_name = data.azurerm_resource_group.rsg.name
   component_name = each.key 
-  record = module.app[each.key].private_ip
+  record = module.lb_app[each.key].app_lb_privateIP
   env = var.env
 }
 
@@ -90,7 +90,7 @@ module "dns_ui" {
   source = "./modules/dns"
   resource_group_name = data.azurerm_resource_group.rsg.name
   component_name = each.key 
-  record = module.ui[each.key].private_ip
+  record = module.lb_ui[each.key].lb_public_ip
   env = var.env
 }
 
