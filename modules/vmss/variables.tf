@@ -12,3 +12,9 @@ variable "img_id" {
 variable "app_pool_id" {
   
 }
+variable "component_name" {
+  
+}
+variable "env" {
+  
+}

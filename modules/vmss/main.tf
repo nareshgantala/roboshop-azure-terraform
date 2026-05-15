@@ -1,5 +1,5 @@
-resource "azurerm_linux_virtual_machine_scale_set" "example" {
-  name                = "example-vmss"
+resource "azurerm_linux_virtual_machine_scale_set" "main" {
+  name                = "${var.component_name}-${var.env}"
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = "Standard_F2"
@@ -25,4 +25,68 @@ resource "azurerm_linux_virtual_machine_scale_set" "example" {
       load_balancer_backend_address_pool_ids = var.app_pool_id
     }
   }
+}
+
+resource "azurerm_monitor_autoscale_setting" "main" {
+  name                = "${var.component_name}-${var.env}"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  target_resource_id  = azurerm_linux_virtual_machine_scale_set.main.id
+
+  profile {
+    name = "defaultProfile"
+
+    capacity {
+      default = 2
+      minimum = 2
+      maximum = 10
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.main.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "GreaterThan"
+        threshold          = 75
+        metric_namespace   = "microsoft.compute/virtualmachinescalesets"
+        dimensions {
+          name     = "AppName"
+          operator = "Equals"
+          values   = ["App1"]
+        }
+      }
+
+      scale_action {
+        direction = "Increase"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT1M"
+      }
+    }
+
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.main.id
+        time_grain         = "PT1M"
+        statistic          = "Average"
+        time_window        = "PT5M"
+        time_aggregation   = "Average"
+        operator           = "LessThan"
+        threshold          = 25
+      }
+
+      scale_action {
+        direction = "Decrease"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT1M"
+      }
+    }
+  }
+
 }
