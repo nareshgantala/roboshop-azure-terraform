@@ -33,31 +33,31 @@ module "db" {
   env = var.env
 }
 
-module "app" {
-  depends_on = [ module.db, module.networking ]
-  for_each = var.app   
-  source = "./modules/vm"
-  component_name =each.key 
-  tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  location = data.azurerm_resource_group.rsg.location
-  size = each.value["size"] 
-  nic_id = module.networking[each.key].nid
-  env = var.env
-}
+# module "app" {
+#   depends_on = [ module.db, module.networking ]
+#   for_each = var.app   
+#   source = "./modules/vm"
+#   component_name =each.key 
+#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   size = each.value["size"] 
+#   nic_id = module.networking[each.key].nid
+#   env = var.env
+# }
 
-module "ui" {
-  depends_on = [ module.app, module.networking ]
-  for_each = var.ui   
-  source = "./modules/vm"
-  component_name =each.key 
-  tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  location = data.azurerm_resource_group.rsg.location
-  size = each.value["size"]
-  nic_id = module.networking[each.key].nid
-  env = var.env
-}
+# module "ui" {
+#   depends_on = [ module.app, module.networking ]
+#   for_each = var.ui   
+#   source = "./modules/vm"
+#   component_name =each.key 
+#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   size = each.value["size"]
+#   nic_id = module.networking[each.key].nid
+#   env = var.env
+# }
 module "dns_mysql" {
   for_each = var.mysql
   source = "./modules/dns"
@@ -118,6 +118,24 @@ module "lb_ui" {
   component_type = "ui"
   port = each.value["port"]
   nic_id = module.networking[each.key].nid
+}
+
+module "vmss" {
+  for_each = var.app
+  source = "./modules/vmss"
+  img_id = each.value["img_id"]
+  resource_group_name = data.azurerm_resource_group.rsg.name
+  location = data.azurerm_resource_group.rsg.location
+  app_pool_id = module.lb_app[each.key].app_pool_id
+}
+
+module "vmss" {
+  for_each = var.ui
+  source = "./modules/vmss"
+  img_id = each.value["img_id"]
+  resource_group_name = data.azurerm_resource_group.rsg.name
+  location = data.azurerm_resource_group.rsg.location
+  app_pool_id = module.lb_ui[each.key].ui_pool_id
 }
 
 
@@ -212,51 +230,51 @@ inline = [
 }
 
 
-resource "null_resource" "null_app" {
+# resource "null_resource" "null_app" {
   
-  for_each = var.app
-  depends_on = [ null_resource.null_db_mysql, module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
-    # Changes to any instance of the cluster requires re-provisioning
-  triggers = {
-    cluster_instance_ids = module.app[each.key].private_ip
-  }
-  connection {
-      type = "ssh"
-      user = "devops"
-      password = "Devops@12345"
-      host = module.app[each.key].private_ip
-  }
+#   for_each = var.app
+#   depends_on = [ null_resource.null_db_mysql, module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+#     # Changes to any instance of the cluster requires re-provisioning
+#   triggers = {
+#     cluster_instance_ids = module.app[each.key].private_ip
+#   }
+#   connection {
+#       type = "ssh"
+#       user = "devops"
+#       password = "Devops@12345"
+#       host = module.app[each.key].private_ip
+#   }
 
-  provisioner "remote-exec" {
-    # Bootstrap script called with private_ip of each node in the clutser
-inline = [
-  "set -e",
-  "sudo dnf install ansible-core git -y",
-  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
-]
-  }
-}
+#   provisioner "remote-exec" {
+#     # Bootstrap script called with private_ip of each node in the clutser
+# inline = [
+#   "set -e",
+#   "sudo dnf install ansible-core git -y",
+#   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
+# ]
+#   }
+# }
 
-resource "null_resource" "null_ui" {
-  for_each = var.ui
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
-    # Changes to any instance of the cluster requires re-provisioning
-  triggers = {
-    cluster_instance_ids = module.ui[each.key].private_ip
-  }
-  connection {
-      type = "ssh"
-      user = "devops"
-      password = "Devops@12345"
-      host = module.ui[each.key].private_ip
-  }
+# resource "null_resource" "null_ui" {
+#   for_each = var.ui
+#   depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+#     # Changes to any instance of the cluster requires re-provisioning
+#   triggers = {
+#     cluster_instance_ids = module.ui[each.key].private_ip
+#   }
+#   connection {
+#       type = "ssh"
+#       user = "devops"
+#       password = "Devops@12345"
+#       host = module.ui[each.key].private_ip
+#   }
 
-  provisioner "remote-exec" {
-    # Bootstrap script called with private_ip of each node in the clutser
-inline = [
-  "set -e",
-  "sudo dnf install ansible-core git -y",
-  "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
-]
-  }
-}
+#   provisioner "remote-exec" {
+#     # Bootstrap script called with private_ip of each node in the clutser
+# inline = [
+#   "set -e",
+#   "sudo dnf install ansible-core git -y",
+#   "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git site.yml -e component_name=${each.key} -e env=${var.env}"
+# ]
+#   }
+# }
