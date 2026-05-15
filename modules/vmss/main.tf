@@ -3,12 +3,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = var.size
-  instances           = 1
+  instances           = 2
   admin_username      = "devops"
   admin_password      = "Devops@12345"
   disable_password_authentication = false
   secure_boot_enabled = true
   vtpm_enabled        = true
+  upgrade_mode = "Automatic"
   
 
 
