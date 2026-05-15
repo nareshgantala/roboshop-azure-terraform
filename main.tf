@@ -130,6 +130,7 @@ module "vmss" {
   app_pool_id = module.lb_app[each.key].app_pool_id
   subnet_id = data.azurerm_subnet.default_subnet.id
   size = each.value["size"]
+  img_id = var.img_id
 }
 
 module "vmss_ui" {
@@ -142,6 +143,7 @@ module "vmss_ui" {
   app_pool_id = module.lb_ui[each.key].ui_pool_id
   subnet_id = data.azurerm_subnet.default_subnet.id
   size = each.value["size"]
+  img_id = var.img_id
 }
 
 
