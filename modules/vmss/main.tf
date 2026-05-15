@@ -10,16 +10,24 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   secure_boot_enabled = true
   vtpm_enabled        = true
   upgrade_mode = "Automatic"
-  
-  
-
-
-  source_image_id     = var.img_id
 
   os_disk {
     storage_account_type = "Standard_LRS"
     caching              = "ReadWrite"
   }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -e
+    # 1. Install dependencies if not in image
+    sudo dnf install ansible-core git -y
+    
+    # 2. Run Ansible Pull
+    # We use -e to pass the component name dynamically
+    ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-azure-ansible.git \
+      site.yml -e component_name=${var.component_name} -e env=${var.env}
+  EOF
+  )
 
   network_interface {
     name    = "example"
@@ -31,6 +39,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
       subnet_id = var.subnet_id
       load_balancer_backend_address_pool_ids = [var.app_pool_id]
     }
+    
   }
 }
 
