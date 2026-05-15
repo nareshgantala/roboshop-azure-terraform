@@ -129,7 +129,7 @@ module "vmss" {
   app_pool_id = module.lb_app[each.key].app_pool_id
 }
 
-module "vmss" {
+module "vmss_ui" {
   for_each = var.ui
   source = "./modules/vmss"
   img_id = each.value["img_id"]
