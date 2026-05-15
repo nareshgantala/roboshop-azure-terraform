@@ -129,6 +129,7 @@ module "vmss" {
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   app_pool_id = module.lb_app[each.key].app_pool_id
+  subnet_id = data.azurerm_subnet.default_subnet.id
 }
 
 module "vmss_ui" {
@@ -140,6 +141,7 @@ module "vmss_ui" {
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   app_pool_id = module.lb_ui[each.key].ui_pool_id
+  subnet_id = data.azurerm_subnet.default_subnet.id
 }
 
 
