@@ -27,5 +27,3 @@ variable "size" {
   
 }
 
-variable "img_id" {
-}
