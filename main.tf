@@ -121,6 +121,7 @@ module "lb_ui" {
 }
 
 module "vmss" {
+  depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
   for_each = var.app
   source = "./modules/vmss"
   component_name =each.key
@@ -134,6 +135,7 @@ module "vmss" {
 }
 
 module "vmss_ui" {
+  depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
   for_each = var.ui
   source = "./modules/vmss"
   component_name =each.key
