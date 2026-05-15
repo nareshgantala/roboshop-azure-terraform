@@ -20,37 +20,30 @@ variable "app" {
     catalogue = {
       size = "Standard_B1s"
       port = 8002
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-catalogue"
     }
     user = {
       size = "Standard_B1s"
       port = 8001
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-user"
     }
     cart = {
       size = "Standard_B1s"
       port = 8003
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-cart"
     }
     shipping = {
       size = "Standard_B1s"
       port = 8004
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-shipping"
     }
     payment = {
       size = "Standard_B1s"
       port = 8005
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-payment"
     }
     orders = {
       size = "Standard_B1s"
       port = 8007
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-orders"
     }
     ratings = {
       size = "Standard_B1s"
       port = 8006
-      img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-ratings"
     }
   }
 }
@@ -60,7 +53,6 @@ variable "ui" {
     frontend = {
      size = "Standard_B1s"
      port = 80
-     img_id = "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east/providers/Microsoft.Compute/galleries/roboshopGallery/images/roboshop-frontend"
     }
   }
 }

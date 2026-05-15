@@ -123,7 +123,6 @@ module "lb_ui" {
 module "vmss" {
   for_each = var.app
   source = "./modules/vmss"
-  img_id = each.value["img_id"]
   component_name =each.key
   env = var.env
   resource_group_name = data.azurerm_resource_group.rsg.name
@@ -138,7 +137,6 @@ module "vmss_ui" {
   source = "./modules/vmss"
   component_name =each.key
   env = var.env
-  img_id = each.value["img_id"]
   resource_group_name = data.azurerm_resource_group.rsg.name
   location = data.azurerm_resource_group.rsg.location
   app_pool_id = module.lb_ui[each.key].ui_pool_id

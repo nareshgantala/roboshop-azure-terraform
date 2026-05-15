@@ -10,6 +10,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   secure_boot_enabled = true
   vtpm_enabled        = true
   upgrade_mode = "Automatic"
+  source_image_id = var.img_id
 
   os_disk {
     storage_account_type = "Standard_LRS"
