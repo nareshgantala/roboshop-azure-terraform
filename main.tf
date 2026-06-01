@@ -33,6 +33,7 @@ module "db" {
   env = var.env
 }
 
+# Moving to vmss for auto scaling
 # module "app" {
 #   depends_on = [ module.db, module.networking ]
 #   for_each = var.app   
@@ -46,6 +47,8 @@ module "db" {
 #   env = var.env
 # }
 
+
+# Moving to vmss for auto scaling
 # module "ui" {
 #   depends_on = [ module.app, module.networking ]
 #   for_each = var.ui   
@@ -120,33 +123,35 @@ module "lb_ui" {
   nic_id = module.networking[each.key].nid
 }
 
-module "vmss" {
-  depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
-  for_each = var.app
-  source = "./modules/vmss"
-  component_name =each.key
-  env = var.env
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  location = data.azurerm_resource_group.rsg.location
-  app_pool_id = module.lb_app[each.key].app_pool_id
-  subnet_id = data.azurerm_subnet.default_subnet.id
-  size = each.value["size"]
-  img_id = var.img_id
-}
+# Moving to kubernets
+# module "vmss" {
+#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
+#   for_each = var.app
+#   source = "./modules/vmss"
+#   component_name =each.key
+#   env = var.env
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   app_pool_id = module.lb_app[each.key].app_pool_id
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   size = each.value["size"]
+#   img_id = var.img_id
+# }
 
-module "vmss_ui" {
-  depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
-  for_each = var.ui
-  source = "./modules/vmss"
-  component_name =each.key
-  env = var.env
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  location = data.azurerm_resource_group.rsg.location
-  app_pool_id = module.lb_ui[each.key].ui_pool_id
-  subnet_id = data.azurerm_subnet.default_subnet.id
-  size = each.value["size"]
-  img_id = var.img_id
-}
+# Moving to kubernets
+# module "vmss_ui" {
+#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
+#   for_each = var.ui
+#   source = "./modules/vmss"
+#   component_name =each.key
+#   env = var.env
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   app_pool_id = module.lb_ui[each.key].ui_pool_id
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   size = each.value["size"]
+#   img_id = var.img_id
+# }
 
 
 resource "azurerm_nat_gateway" "nat" {
