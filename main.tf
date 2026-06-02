@@ -53,21 +53,13 @@ module "dns_db" {
   env = var.env
 }
 
-module "dns_app" {
-  for_each = var.app
-  source = "./modules/dns"
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  component_name = each.key 
-  record = module.lb_app[each.key].app_lb_privateIP
-  env = var.env
-}
 
 module "dns_ui" {
   for_each = var.ui
   source = "./modules/dns"
   resource_group_name = data.azurerm_resource_group.rsg.name
   component_name = each.key 
-  record = module.lb_ui[each.key].lb_public_ip
+  record = module.aks.fqdn
   env = var.env
 }
 
@@ -150,7 +142,7 @@ inline = [
 
 resource "null_resource" "null_db" {
   for_each = var.db
-  depends_on = [ module.dns_app, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+  depends_on = [ module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = module.db[each.key].private_ip
@@ -171,6 +163,17 @@ inline = [
 ]
   }
 }
+
+#Moved to Kubernetes, no need seperate dns entries as coreDNS in kubernetes help resolve with service IPs
+# module "dns_app" {
+#   for_each = var.app
+#   source = "./modules/dns"
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   component_name = each.key 
+#   record = module.lb_app[each.key].app_lb_privateIP
+#   env = var.env
+# }
+
 
 #Moved to Kubernetes ingress controller
 #module "lb_app" {
