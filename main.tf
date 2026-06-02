@@ -71,31 +71,11 @@ module "dns_ui" {
   env = var.env
 }
 
-module "lb_app" {
-  for_each = var.app
-  source = "./modules/lb"
-  subnet_id = data.azurerm_subnet.default_subnet.id
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  component_name = each.key
-  env = var.env
-  location = data.azurerm_resource_group.rsg.location
-  component_type = "app"
-  port = each.value["port"]
-  nic_id = module.networking[each.key].nid
+module "aks" {
+  source = "./modules/aks"
 }
 
-module "lb_ui" {
-  for_each = var.ui
-  source = "./modules/lb"
-  subnet_id = data.azurerm_subnet.default_subnet.id
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  component_name = each.key
-  env = var.env
-  location = data.azurerm_resource_group.rsg.location
-  component_type = "ui"
-  port = each.value["port"]
-  nic_id = module.networking[each.key].nid
-}
+
 
 resource "azurerm_nat_gateway" "nat" {
   name                    = "nat-gateway"
@@ -186,6 +166,34 @@ inline = [
 ]
   }
 }
+
+#Moved to Kubernetes ingress controller
+#module "lb_app" {
+#   for_each = var.app
+#   source = "./modules/lb"
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   component_name = each.key
+#   env = var.env
+#   location = data.azurerm_resource_group.rsg.location
+#   component_type = "app"
+#   port = each.value["port"]
+#   nic_id = module.networking[each.key].nid
+# }
+
+# module "lb_ui" {
+#   for_each = var.ui
+#   source = "./modules/lb"
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   component_name = each.key
+#   env = var.env
+#   location = data.azurerm_resource_group.rsg.location
+#   component_type = "ui"
+#   port = each.value["port"]
+#   nic_id = module.networking[each.key].nid
+# }
+
 
 # Moving to vmss for auto scaling
 # module "app" {
