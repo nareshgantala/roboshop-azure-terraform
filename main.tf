@@ -116,7 +116,7 @@ resource "null_resource" "file" {
 
 resource "null_resource" "null_db_mysql" {
   for_each = var.mysql
-  depends_on = [ null_resource.file, module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+  depends_on = [ null_resource.file, module.dns_db, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = module.db_mysql[each.key].private_ip
@@ -142,7 +142,7 @@ inline = [
 
 resource "null_resource" "null_db" {
   for_each = var.db
-  depends_on = [ module.dns_db, module.dns_ui, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
+  depends_on = [ module.dns_db, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
     # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     cluster_instance_ids = module.db[each.key].private_ip
