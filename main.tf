@@ -47,6 +47,13 @@ module "aks" {
   depends_on = [ module.networking ]
 }
 
+resource "azurerm_role_assignment" "aks_network_contributor" {
+  scope                = data.azurerm_resource_group.rsg.id
+  role_definition_name = "Network Contributor"
+  principal_id         = module.aks.principal_id
+}
+
+
 ##################DNS BLOCKS#########################
 module "dns_mysql" {
   for_each = var.mysql
