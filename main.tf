@@ -8,6 +8,7 @@ module "networking" {
   public_ip_enabled = each.key == "frontend"
   env = var.env
 }
+
 module "db_mysql" {
   for_each = var.mysql   
   depends_on = [ module.networking ]
@@ -20,6 +21,7 @@ module "db_mysql" {
   nic_id = module.networking[each.key].nid
   env = var.env
 }
+
 module "db" {
   for_each = var.db   
   depends_on = [ module.networking ]
@@ -33,34 +35,6 @@ module "db" {
   env = var.env
 }
 
-# Moving to vmss for auto scaling
-# module "app" {
-#   depends_on = [ module.db, module.networking ]
-#   for_each = var.app   
-#   source = "./modules/vm"
-#   component_name =each.key 
-#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
-#   resource_group_name = data.azurerm_resource_group.rsg.name
-#   location = data.azurerm_resource_group.rsg.location
-#   size = each.value["size"] 
-#   nic_id = module.networking[each.key].nid
-#   env = var.env
-# }
-
-
-# Moving to vmss for auto scaling
-# module "ui" {
-#   depends_on = [ module.app, module.networking ]
-#   for_each = var.ui   
-#   source = "./modules/vm"
-#   component_name =each.key 
-#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
-#   resource_group_name = data.azurerm_resource_group.rsg.name
-#   location = data.azurerm_resource_group.rsg.location
-#   size = each.value["size"]
-#   nic_id = module.networking[each.key].nid
-#   env = var.env
-# }
 module "dns_mysql" {
   for_each = var.mysql
   source = "./modules/dns"
@@ -122,37 +96,6 @@ module "lb_ui" {
   port = each.value["port"]
   nic_id = module.networking[each.key].nid
 }
-
-# Moving to kubernets
-# module "vmss" {
-#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
-#   for_each = var.app
-#   source = "./modules/vmss"
-#   component_name =each.key
-#   env = var.env
-#   resource_group_name = data.azurerm_resource_group.rsg.name
-#   location = data.azurerm_resource_group.rsg.location
-#   app_pool_id = module.lb_app[each.key].app_pool_id
-#   subnet_id = data.azurerm_subnet.default_subnet.id
-#   size = each.value["size"]
-#   img_id = var.img_id
-# }
-
-# Moving to kubernets
-# module "vmss_ui" {
-#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
-#   for_each = var.ui
-#   source = "./modules/vmss"
-#   component_name =each.key
-#   env = var.env
-#   resource_group_name = data.azurerm_resource_group.rsg.name
-#   location = data.azurerm_resource_group.rsg.location
-#   app_pool_id = module.lb_ui[each.key].ui_pool_id
-#   subnet_id = data.azurerm_subnet.default_subnet.id
-#   size = each.value["size"]
-#   img_id = var.img_id
-# }
-
 
 resource "azurerm_nat_gateway" "nat" {
   name                    = "nat-gateway"
@@ -243,6 +186,69 @@ inline = [
 ]
   }
 }
+
+# Moving to vmss for auto scaling
+# module "app" {
+#   depends_on = [ module.db, module.networking ]
+#   for_each = var.app   
+#   source = "./modules/vm"
+#   component_name =each.key 
+#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   size = each.value["size"] 
+#   nic_id = module.networking[each.key].nid
+#   env = var.env
+# }
+
+
+# Moving to vmss for auto scaling
+# module "ui" {
+#   depends_on = [ module.app, module.networking ]
+#   for_each = var.ui   
+#   source = "./modules/vm"
+#   component_name =each.key 
+#   tags = merge(local.common_tags, {Name = "${local.project}-${var.env}-${each.key}"})
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   size = each.value["size"]
+#   nic_id = module.networking[each.key].nid
+#   env = var.env
+# }
+
+
+# Moving to kubernets
+# module "vmss" {
+#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
+#   for_each = var.app
+#   source = "./modules/vmss"
+#   component_name =each.key
+#   env = var.env
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   app_pool_id = module.lb_app[each.key].app_pool_id
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   size = each.value["size"]
+#   img_id = var.img_id
+# }
+
+# Moving to kubernets
+# module "vmss_ui" {
+#   depends_on = [ null_resource.null_db, null_resource.file, null_resource.null_db_mysql ]
+#   for_each = var.ui
+#   source = "./modules/vmss"
+#   component_name =each.key
+#   env = var.env
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   location = data.azurerm_resource_group.rsg.location
+#   app_pool_id = module.lb_ui[each.key].ui_pool_id
+#   subnet_id = data.azurerm_subnet.default_subnet.id
+#   size = each.value["size"]
+#   img_id = var.img_id
+# }
+
+
+
 
 
 # resource "null_resource" "null_app" {
