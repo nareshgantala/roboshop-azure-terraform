@@ -73,6 +73,11 @@ module "dns_ui" {
 
 module "aks" {
   source = "./modules/aks"
+  rg_name = data.azurerm_resource_group.rsg.name
+  project = local.project
+  subnet_id = data.azurerm_subnet.default_subnet.id
+  location = data.azurerm_resource_group.rsg.location
+  env = var.env
 }
 
 
