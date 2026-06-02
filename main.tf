@@ -44,6 +44,7 @@ module "aks" {
   subnet_id = data.azurerm_subnet.default_subnet.id
   location = data.azurerm_resource_group.rsg.location
   env = var.env
+  depends_on = [ module.networking ]
 }
 
 ##################DNS BLOCKS#########################
