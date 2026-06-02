@@ -65,7 +65,6 @@ module "dns_db" {
   env = var.env
 }
 
-
 # Create a static public IP that you will later attach to your K8s Ingress Controller
 resource "azurerm_public_ip" "aks_public_ingress" {
   name                = "${local.project}-${var.env}-aks-pip"
@@ -90,7 +89,7 @@ module "dns_ui" {
 resource "azurerm_nat_gateway" "nat" {
   name                    = "nat-gateway"
   location                = data.azurerm_resource_group.rsg.location
-  resource_group_name     = var.resource_group_name   
+  resource_group_name     = data.azurerm_resource_group.rsg.name
   sku_name                = "Standard"
 }
 
@@ -102,7 +101,7 @@ resource "azurerm_subnet_nat_gateway_association" "example" {
 resource "azurerm_public_ip" "nat_pip" {
   name                = "nat-gateway-pip"
   location            = data.azurerm_resource_group.rsg.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = data.azurerm_resource_group.rsg.name
   allocation_method   = "Static"
   sku                 = "Standard" # Must be Standard to work with NAT Gateway
 }
