@@ -1,3 +1,5 @@
+###################MODULE CALLS##############################
+
 module "networking" { 
   for_each = var.components
   source = "./modules/networking"
@@ -35,6 +37,16 @@ module "db" {
   env = var.env
 }
 
+module "aks" {
+  source = "./modules/aks"
+  rg_name = data.azurerm_resource_group.rsg.name
+  project = local.project
+  subnet_id = data.azurerm_subnet.default_subnet.id
+  location = data.azurerm_resource_group.rsg.location
+  env = var.env
+}
+
+##################DNS BLOCKS#########################
 module "dns_mysql" {
   for_each = var.mysql
   source = "./modules/dns"
@@ -54,26 +66,27 @@ module "dns_db" {
 }
 
 
-module "dns_ui" {
-  for_each = var.ui
-  source = "./modules/dns"
+# Create a static public IP that you will later attach to your K8s Ingress Controller
+resource "azurerm_public_ip" "aks_public_ingress" {
+  name                = "${local.project}-${var.env}-aks-pip"
+  location            = data.azurerm_resource_group.rsg.location
   resource_group_name = data.azurerm_resource_group.rsg.name
-  component_name = each.key 
-  record = module.aks.fqdn
-  env = var.env
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
-module "aks" {
-  source = "./modules/aks"
-  rg_name = data.azurerm_resource_group.rsg.name
-  project = local.project
-  subnet_id = data.azurerm_subnet.default_subnet.id
-  location = data.azurerm_resource_group.rsg.location
-  env = var.env
+module "dns_ui" {
+  for_each            = var.ui
+  source              = "./modules/dns"
+  resource_group_name = data.azurerm_resource_group.rsg.name
+  component_name      = each.key
+  env                 = var.env
+
+  # Fix: Map the domain directly to your static public IP address
+  record              = azurerm_public_ip.aks_public_ingress.ip_address
 }
 
-
-
+##################NETWORKING#########################
 resource "azurerm_nat_gateway" "nat" {
   name                    = "nat-gateway"
   location                = data.azurerm_resource_group.rsg.location
@@ -114,6 +127,8 @@ resource "null_resource" "file" {
     }
 }
 
+
+####################DATABSE SETUP#########################
 resource "null_resource" "null_db_mysql" {
   for_each = var.mysql
   depends_on = [ null_resource.file, module.dns_db, azurerm_subnet_nat_gateway_association.example, azurerm_nat_gateway_public_ip_association.nat_assoc ]
@@ -163,6 +178,8 @@ inline = [
 ]
   }
 }
+
+#######################PREVIOUS CODE########################
 
 #Moved to Kubernetes, no need seperate dns entries as coreDNS in kubernetes help resolve with service IPs
 # module "dns_app" {
