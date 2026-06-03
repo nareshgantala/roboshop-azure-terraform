@@ -8,5 +8,5 @@ output "principal_id" {
 
 output "kubelet_principal_id" {
   # Change this line to target the kubelet identity object_id
-  value = azurerm_kubernetes_cluster.your_cluster_resource_name.kubelet_identity[0].object_id
+  value = azurerm_kubernetes_cluster.main.kubelet_identity[0].object_id
 }
