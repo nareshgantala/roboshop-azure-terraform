@@ -52,7 +52,7 @@ module "aks" {
 resource "azurerm_role_assignment" "aks_acr_pull" {
   scope                = data.azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
-  principal_id         = module.aks.kubelet_principal_id
+  principal_id         = module.aks.principal_id
 
   # Ensures AKS is fully provisioned before attempting the role assignment
   depends_on = [ module.aks ] 
