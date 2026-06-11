@@ -1,180 +1,172 @@
 # RoboShop Azure Infrastructure via Terraform
 
-This repository contains the Infrastructure as Code (IaC) written in Terraform (HCL) to provision and manage the RoboShop application infrastructure on Microsoft Azure. It uses a modular approach to set up network components, virtual machines, and Virtual Machine Scale Sets (VMSS) required for the multi-tier application.
+[![Terraform](https://img.shields.io/badge/Terraform-%235843D9.svg?style=flat&logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=flat&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/)
+[![Ansible](https://img.shields.io/badge/Ansible-%23EE0000.svg?style=flat&logo=ansible&logoColor=white)](https://www.ansible.com/)
+
+This repository contains the Infrastructure as Code (IaC) configuration in Terraform (HCL) to provision and manage the infrastructure for the **RoboShop** microservices-based application on Microsoft Azure.
+
+The architecture utilizes a hybrid deployment model:
+1. **Stateful Database Services** (MySQL, MongoDB, Valkey, RabbitMQ) run on isolated **Azure Linux Virtual Machines (VMs)**.
+2. **Stateless Application & Frontend Tiers** (Catalogue, User, Cart, Shipping, Payment, Orders, Ratings, Frontend) run on an **Azure Kubernetes Service (AKS)** cluster.
 
 ---
 
-# 📌 Project Overview
+## 📌 Architecture Overview
 
-RoboShop is a microservices-based e-commerce application. This project automates the creation of its cloud infrastructure on Azure, ensuring consistent environments across development, testing, and production phases.
+```mermaid
+graph TD
+    subgraph Azure Cloud Environment
+        subgraph VNet (test-virtual-network)
+            subgraph Default Subnet
+                NAT[NAT Gateway] -->|Egress| Internet[Public Internet]
+                AKS[Azure Kubernetes Cluster]
+                
+                subgraph Database Virtual Machines
+                    MySQL[MySQL VM]
+                    Mongo[MongoDB VM]
+                    Valkey[Valkey VM]
+                    Rabbit[RabbitMQ VM]
+                end
+            end
+        end
+
+        DNS[Azure DNS Zone: naresh-training.online]
+        ACR[Azure Container Registry: nareshroboshop]
+        PIP[Static Public IP]
+    end
+
+    %% Network relationships
+    AKS -->|Role Assignment: Network Contributor| VNet
+    AKS -->|Role Assignment: AcrPull| ACR
+    PIP -->|Maps Ingress| DNS
+    MySQL -->|Bootstrap: ansible-pull| MySQL
+    Mongo -->|Bootstrap: ansible-pull| Mongo
+    Valkey -->|Bootstrap: ansible-pull| Valkey
+    Rabbit -->|Bootstrap: ansible-pull| Rabbit
+```
+
+- **Egress Gateway**: A NAT Gateway associated with the default subnet provides secure, outbound-only internet connectivity for the virtual machines and Kubernetes cluster node pool.
+- **Service Resolution**: MySQL, MongoDB, Valkey, and RabbitMQ have DNS A records mapped inside the `naresh-training.online` zone. Within the AKS cluster, microservices resolve each other internally via Kubernetes DNS.
+- **Permissions**: AKS uses Managed Identities to pull container images from the Azure Container Registry (`nareshroboshop.azurecr.io`) via `AcrPull` role assignments and modify network resources via a `Network Contributor` assignment.
 
 ---
 
-# 📂 Repository Structure
-
-The project is structured with a root configuration calling reusable modules:
+## 📂 Repository Structure
 
 ```plaintext
-├── environment/          # Environment-specific configuration variables (dev, prod, etc.)
-├── modules/              # Reusable infrastructure components
-│   ├── vnet/             # Virtual Network and subnet configurations
-│   ├── compute/          # Virtual Machines and VMSS setups
-│   └── security/         # Network Security Groups (NSG) and firewall rules
-├── main.tf               # Primary Terraform execution file orchestrating the modules
-├── providers.tf          # AzureRM and backend provider configurations
-├── data.tf               # Data sources for fetching existing cloud resources
-├── locals.tf             # Local variables for managing tags and naming conventions
-├── output.tf             # Outputs exported after a successful deployment
-└── requirements.yml      # Ansible roles or dependencies (if configuration management is used)
+├── environment/                # Environment-specific configuration and backend state files
+│   ├── dev/
+│   │   ├── dev.tfvars          # Variables for the Development environment (e.g., env = "dev")
+│   │   └── state.tfvars        # Remote backend state configuration (Storage Account, container, key)
+│   ├── qa/
+│   │   └── qa.tfvars           # Variables for the QA environment
+│   └── prod/
+│       └── prod.tfvars         # Variables for the Production environment
+├── modules/                    # Reusable modular infrastructure components
+│   ├── aks/                    # Provisions Azure Kubernetes Service (AKS) with System-Assigned identity
+│   ├── dns/                    # Manages Private/Public DNS A records in the dns zone
+│   ├── networking/             # Creates Network Interfaces (NIC), Security Groups (NSG) and Public IPs
+│   ├── vm/                     # Deploys Linux VMs using custom shared gallery images (roboshopGallery/roboshopImage)
+│   ├── lb/                     # [Legacy] Infrastructure for Load Balancer setups (commented out, kept for reference)
+│   └── vmss/                   # [Legacy] Infrastructure for Virtual Machine Scale Sets (commented out, kept for reference)
+├── main.tf                     # Main orchestration file mapping modules, NAT gateways, role assignments & VM provisioners
+├── locals.tf                   # Shared local definitions (project name, resource tags)
+├── variables.tf                # Variable declarations and default VM sizing details
+├── provider.tf                 # Terraform provider block and Azure storage backend settings
+├── data.tf                     # Data resources (fetches subnet, resource group, and container registry details)
+├── output.tf                   # Outputs resource group name and region location
+├── requirements.yml            # Ansible Galaxy requirements (MySQL collection)
+└── Makefile                    # Automates deployment tasks (Terraform init, apply, destroy)
 ```
 
 ---
 
-# 🛠 Prerequisites
+## ⚙️ Configuration & Variables
 
-Before deploying this infrastructure, ensure you have the following tools installed and configured:
+### Input Variables (`variables.tf`)
 
-- Terraform (Version 1.5.0+ recommended)
-- Azure CLI (Logged into your Azure Subscription using `az login`)
-- SSH Key Pair for Linux virtual machine access
+Key configuration parameters that can be overridden:
+
+| Name | Type | Default Value | Description |
+|------|------|---------------|-------------|
+| `resource_group_name` | `string` | `"denmark-east"` | The target Azure Resource Group. |
+| `env` | `string` | *Required (no default)* | Environment identifier (e.g., `dev`, `qa`, `prod`). |
+| `mysql` | `map` | `{ mysql = "Standard_B1s" }` | Instance size for MySQL DB server. |
+| `db` | `map` | MongoDB, Valkey, RabbitMQ mapping to `"Standard_B1s"` | VM sizes for non-relational database components. |
+| `img_id` | `string` | Custom shared image gallery resource ID | Shared image reference used to provision Linux VM instances. |
+| `public_ip_enabled` | `bool` | `false` | Enable public IP mapping for network interface cards. |
+
+### Local Variables (`locals.tf`)
+
+Defines unified resource tags:
+```hcl
+locals {
+  project = "roboshop"
+  common_tags = {
+    name = local.project
+    env  = var.env
+  }
+}
+```
 
 ---
 
-# 🚀 Deployment Steps
+## 🛠 Database Provisioning & Bootstrap
 
-## 1. Clone the Repository
+The virtual machines are configured post-creation using a hybrid approach combining Terraform `remote-exec` provisioners and Ansible:
+
+1. **Requirements Setup**: The root `requirements.yml` lists the `community.mysql` galaxy collection.
+2. **File Copy**: Terraform uses an SSH connection (username: `devops`, password-based auth) to copy `requirements.yml` to `/home/devops/requirements.yml` on the MySQL VM.
+3. **Ansible Pull**: 
+   - **MySQL VM**: Connects via SSH, installs `ansible-core`, `git`, `python3-pip`, and `PyMySQL`, installs the galaxy collection, and executes `ansible-pull` against the [roboshop-azure-ansible](https://github.com/nareshgantala/roboshop-azure-ansible.git) repository.
+   - **Other Database VMs** (MongoDB, Valkey, RabbitMQ): Connects via SSH, installs `ansible-core` and `git`, and executes `ansible-pull` directly to configure the services.
+
+---
+
+## 🚀 Execution & Deployment Workflow
+
+A `Makefile` is provided to simplify initialization and environment orchestration.
+
+### Prerequisites
+
+Ensure you have the following installed locally:
+- **Terraform** (v1.5.0+)
+- **Azure CLI** (Authenticated via `az login`)
+- Access to the target subscription and Resource Group (`denmark-east`)
+
+### Run Deployment (Development Environment)
+
+To initialize Terraform with remote backend state storage and apply changes automatically:
 
 ```bash
-git clone https://github.com/nareshgantala/roboshop-azure-terraform.git
-cd roboshop-azure-terraform
+make dev-apply
 ```
 
----
+This target runs:
+```bash
+terraform init -backend-config=environment/dev/state.tfvars
+terraform apply -auto-approve -var-file=environment/dev/dev.tfvars
+```
 
-## 2. Initialize Terraform
+### Tear Down Deployment
 
-Initialize the working directory to download the required providers and modules.
+To destroy the provisioned infrastructure:
 
 ```bash
-terraform init
+make dev-destroy
 ```
 
----
-
-## 3. Plan the Deployment
-
-Run a dry run to verify which resources Terraform will create, modify, or destroy.
-
+This target runs:
 ```bash
-terraform plan -var-file="environment/dev.tfvars"
+terraform init -backend-config=environment/dev/state.tfvars
+terraform destroy -auto-approve -var-file=environment/dev/dev.tfvars
 ```
 
 ---
 
-## 4. Apply Changes
+## 🔐 Security Best Practices
 
-Deploy the infrastructure to Azure.
-
-```bash
-terraform apply -var-file="environment/dev.tfvars"
-```
-
-Type `yes` when prompted to confirm the deployment.
-
----
-
-## 5. Destroy Infrastructure (Optional)
-
-Delete all managed Azure resources to avoid unnecessary costs.
-
-```bash
-terraform destroy -var-file="environment/dev.tfvars"
-```
-
----
-
-# ⚙️ Configuration & Customization
-
-## `locals.tf`
-
-Modify this file to update:
-
-- Project naming conventions
-- Default tags
-- Global reusable variables
-
-## `environment/`
-
-Create or modify `.tfvars` files to manage different environments such as:
-
-- Development (`dev.tfvars`)
-- Production (`prod.tfvars`)
-- Testing (`test.tfvars`)
-
-Example customizations:
-
-- VM sizes
-- Scaling configurations
-- CIDR ranges
-- Resource naming
-
----
-
-# 🏗 Infrastructure Components
-
-This Terraform project provisions the following Azure resources:
-
-- Virtual Network (VNet)
-- Subnets
-- Network Security Groups (NSGs)
-- Linux Virtual Machines
-- Virtual Machine Scale Sets (VMSS)
-- Public & Private Networking Components
-- Security Rules and Firewall Configurations
-
----
-
-# 📖 Terraform Workflow
-
-```plaintext
-terraform init     -> Initialize providers/modules
-terraform plan     -> Preview infrastructure changes
-terraform apply    -> Create/update infrastructure
-terraform destroy  -> Remove infrastructure
-```
-
----
-
-# 🔐 Security Best Practices
-
-- Never hardcode secrets or credentials in Terraform files.
-- Use Azure Key Vault or environment variables for sensitive data.
-- Restrict NSG inbound rules wherever possible.
-- Store Terraform state securely using remote backends.
-
----
-
-# 📌 Notes
-
-- This project follows a modular Terraform design for better scalability and reusability.
-- Separate environment variable files help maintain isolated configurations across environments.
-- Infrastructure can be extended easily by adding new modules under the `modules/` directory.
-
----
-
-# 🤝 Contributing
-
-Contributions, improvements, and suggestions are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
-
----
-
-# 📄 License
-
-This project is licensed under the MIT License.
-
----
+- **Dynamic Access Control**: A Network Security Group (NSG) named `allow-all` is resolved from data sources and mapped to all VM network interfaces. Ensure this NSG is configured with appropriate IP rules in production.
+- **Egress Network Protection**: All private VMs are locked inside a secure subnet with outbound traffic route-mapped through the NAT Gateway.
+- **Secrets Management**: Secrets (such as the default VM password `Devops@12345`) are shown in plaintext inside this codebase for educational and demo configurations. For staging or production, replace password auth with SSH key pairs or store secrets in **Azure Key Vault**.
