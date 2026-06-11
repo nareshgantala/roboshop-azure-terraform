@@ -16,28 +16,28 @@ The architecture utilizes a hybrid deployment model:
 
 ```mermaid
 graph TD
-    subgraph Azure Cloud Environment
-        subgraph VNet (test-virtual-network)
-            subgraph Default Subnet
-                NAT[NAT Gateway] -->|Egress| Internet[Public Internet]
-                AKS[Azure Kubernetes Cluster]
+    subgraph cloud ["Azure Cloud Environment"]
+        subgraph vnet ["VNet (test-virtual-network)"]
+            subgraph subnet ["Default Subnet"]
+                NAT["NAT Gateway"] -->|Egress| Internet["Public Internet"]
+                AKS["Azure Kubernetes Cluster"]
                 
-                subgraph Database Virtual Machines
-                    MySQL[MySQL VM]
-                    Mongo[MongoDB VM]
-                    Valkey[Valkey VM]
-                    Rabbit[RabbitMQ VM]
+                subgraph db_vms ["Database Virtual Machines"]
+                    MySQL["MySQL VM"]
+                    Mongo["MongoDB VM"]
+                    Valkey["Valkey VM"]
+                    Rabbit["RabbitMQ VM"]
                 end
             end
         end
 
-        DNS[Azure DNS Zone: naresh-training.online]
-        ACR[Azure Container Registry: nareshroboshop]
-        PIP[Static Public IP]
+        DNS["Azure DNS Zone: naresh-training.online"]
+        ACR["Azure Container Registry: nareshroboshop"]
+        PIP["Static Public IP"]
     end
 
     %% Network relationships
-    AKS -->|Role Assignment: Network Contributor| VNet
+    AKS -->|Role Assignment: Network Contributor| vnet
     AKS -->|Role Assignment: AcrPull| ACR
     PIP -->|Maps Ingress| DNS
     MySQL -->|Bootstrap: ansible-pull| MySQL
