@@ -19,4 +19,26 @@ resource "helm_release" "prom_stack" {
   name       = "pstack"
   repository = "oci://ghcr.io/prometheus-community/charts"
   chart      = "kube-prometheus-stack"
+  values = [
+    yamlencode({
+      grafana = {
+        ingress = {
+          enabled          = true
+          ingressClassName = "traefik"
+          hosts            = ["grafana-${var.env}.naresh-training.online"]
+          paths            = ["/"]
+          pathType         = "Prefix"
+        }
+      }
+      prometheus = {
+        ingress = {
+          enabled          = true
+          ingressClassName = "traefik"
+          hosts            = ["prometheus-${var.env}.naresh-training.online"]
+          paths            = ["/"]
+          pathType         = "Prefix"
+        }
+      }
+    })
+  ]
 }
