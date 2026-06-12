@@ -94,13 +94,14 @@ module "dns_db" {
 }
 
 # Create a static public IP that you will later attach to your K8s Ingress Controller
-resource "azurerm_public_ip" "aks_public_ingress" {
-  name                = "${local.project}-${var.env}-aks-pip"
-  location            = data.azurerm_resource_group.rsg.location
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
+#moved to traefik ingress controller
+# resource "azurerm_public_ip" "aks_public_ingress" {
+#   name                = "${local.project}-${var.env}-aks-pip"
+#   location            = data.azurerm_resource_group.rsg.location
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   allocation_method   = "Static"
+#   sku                 = "Standard"
+# }
 
 module "dns_ui" {
   for_each            = var.ui
