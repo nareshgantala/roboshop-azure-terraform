@@ -42,3 +42,11 @@ resource "helm_release" "prom_stack" {
     })
   ]
 }
+
+
+resource "helm_release" "external_dns" {
+  depends_on = [ null_resource.kube-config, helm_release.traefik_ingress, helm_release.prom_stack ]
+  name       = "external-dns"
+  repository = "https://kubernetes-sigs.github.io/external-dns"
+  chart      = "external-dns"
+}
