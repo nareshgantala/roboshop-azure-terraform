@@ -92,7 +92,7 @@ module "dns_db" {
   record = module.db[each.key].private_ip
   env = var.env
 }
-
+############################################################
 # Create a static public IP that you will later attach to your K8s Ingress Controller
 #moved to traefik ingress controller
 # resource "azurerm_public_ip" "aks_public_ingress" {
@@ -103,16 +103,16 @@ module "dns_db" {
 #   sku                 = "Standard"
 # }
 
-module "dns_ui" {
-  for_each            = var.ui
-  source              = "./modules/dns"
-  resource_group_name = data.azurerm_resource_group.rsg.name
-  component_name      = each.key
-  env                 = var.env
+# module "dns_ui" {
+#   for_each            = var.ui
+#   source              = "./modules/dns"
+#   resource_group_name = data.azurerm_resource_group.rsg.name
+#   component_name      = each.key
+#   env                 = var.env
 
-  # Fix: Map the domain directly to your static public IP address
-  record              = azurerm_public_ip.aks_public_ingress.ip_address
-}
+#   # Fix: Map the domain directly to your static public IP address
+#   record              = azurerm_public_ip.aks_public_ingress.ip_address
+# }
 
 ##################NETWORKING#########################
 resource "azurerm_nat_gateway" "nat" {
