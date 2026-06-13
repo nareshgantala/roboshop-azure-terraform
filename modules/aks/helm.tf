@@ -47,8 +47,8 @@ resource "helm_release" "prometheus_stack" {
               job_name = "azure-vms"
               azure_sd_configs = [
                 {
-                  subscription_id = "3f2e42e1-ca06-4a99-8c56-be8d8ba306db"
-                  tenant_id       = "229f3fa3-57f3-4e2c-852f-24b7bf512640"
+                  subscription_id = "9be9bd1a-817e-486f-9b33-1b1f79ed3727"
+                  tenant_id       = "39327c73-7743-4d89-9607-d01ea0747b9d"
                   client_id       = data.azurerm_key_vault_secret.PrometheusClientID.value
                   client_secret   = data.azurerm_key_vault_secret.PrometheusClientPassword.value
                   port            = 9100
@@ -77,6 +77,15 @@ resource "helm_release" "prometheus_stack" {
   ]
 }
 
+
+# # 1. Create Service Principal for External DNS
+# az ad sp create-for-rbac --name "ExternalDnsServicePrincipal" --skip-assignment
+# az role assignment create --role "DNS Zone Contributor" \
+#   --assignee "0f7f7c40-a5fd-43ac-9feb-0172b036ba65" \
+#   --scope "/subscriptions/9be9bd1a-817e-486f-9b33-1b1f79ed3727/resourceGroups/denmark-east"
+
+
+
 ## External DNS Helm chart secret
 resource "null_resource" "external-dns-secret" {
   depends_on = [
@@ -86,8 +95,8 @@ resource "null_resource" "external-dns-secret" {
   provisioner "local-exec" {
     command = <<EOF
 echo '{
-  "tenantId": "229f3fa3-57f3-4e2c-852f-24b7bf512640",
-  "subscriptionId": "3f2e42e1-ca06-4a99-8c56-be8d8ba306db",
+  "tenantId": "39327c73-7743-4d89-9607-d01ea0747b9d",
+  "subscriptionId": "9be9bd1a-817e-486f-9b33-1b1f79ed3727",
   "resourceGroup": "${var.rg_name}",
   "aadClientId": "${data.azurerm_key_vault_secret.ClientID.value}",
   "aadClientSecret": "${data.azurerm_key_vault_secret.ClientPassword.value}"
@@ -138,8 +147,8 @@ resource "local_file" "prom-input" {
             job_name = "azure-vms"
             azure_sd_configs = [
               {
-                subscription_id = "3f2e42e1-ca06-4a99-8c56-be8d8ba306db"
-                tenant_id       = "229f3fa3-57f3-4e2c-852f-24b7bf512640"
+                subscription_id = "9be9bd1a-817e-486f-9b33-1b1f79ed3727"
+                tenant_id       = "39327c73-7743-4d89-9607-d01ea0747b9d"
                 client_id       = data.azurerm_key_vault_secret.PrometheusClientID.value
                 client_secret   = data.azurerm_key_vault_secret.PrometheusClientPassword.value
                 port            = 9100
