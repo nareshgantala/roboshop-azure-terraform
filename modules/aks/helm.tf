@@ -121,57 +121,59 @@ resource "helm_release" "external_dns" {
 
 }
 
-resource "local_file" "prom-input" {
-  filename = "/tmp/prom.yml"
-  content = yamlencode({
-    grafana = {
-      ingress = {
-        enabled          = true
-        ingressClassName = "traefik"
-        hosts            = ["grafana-${var.env}.naresh-training.online"]
-        path             = "/"
-        pathType         = "Prefix"
-      }
-    }
-    prometheus = {
-      ingress = {
-        enabled          = true
-        ingressClassName = "traefik"
-        hosts            = ["prometheus-${var.env}.naresh-training.online"]
-        paths            = ["/"]
-        pathType         = "Prefix"
-      }
-      prometheusSpec = {
-        additionalScrapeConfigs = [
-          {
-            job_name = "azure-vms"
-            azure_sd_configs = [
-              {
-                subscription_id = "9be9bd1a-817e-486f-9b33-1b1f79ed3727"
-                tenant_id       = "39327c73-7743-4d89-9607-d01ea0747b9d"
-                client_id       = data.azurerm_key_vault_secret.PrometheusClientID.value
-                client_secret   = data.azurerm_key_vault_secret.PrometheusClientPassword.value
-                port            = 9100
-                resource_group  = var.rg_name
-              }
-            ]
-            relabel_configs = [
-              {
-                source_labels = ["__meta_azure_machine_name"]
-                target_label  = "instance_name"
-              },
-              {
-                source_labels = ["__meta_azure_machine_resource_group"]
-                target_label  = "resource_group"
-              },
-              {
-                source_labels = ["__meta_azure_machine_location"]
-                target_label  = "region"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  })
-}
+
+#checking yaml conversion
+# resource "local_file" "prom-input" {
+#   filename = "/tmp/prom.yml"
+#   content = yamlencode({
+#     grafana = {
+#       ingress = {
+#         enabled          = true
+#         ingressClassName = "traefik"
+#         hosts            = ["grafana-${var.env}.naresh-training.online"]
+#         path             = "/"
+#         pathType         = "Prefix"
+#       }
+#     }
+#     prometheus = {
+#       ingress = {
+#         enabled          = true
+#         ingressClassName = "traefik"
+#         hosts            = ["prometheus-${var.env}.naresh-training.online"]
+#         paths            = ["/"]
+#         pathType         = "Prefix"
+#       }
+#       prometheusSpec = {
+#         additionalScrapeConfigs = [
+#           {
+#             job_name = "azure-vms"
+#             azure_sd_configs = [
+#               {
+#                 subscription_id = "9be9bd1a-817e-486f-9b33-1b1f79ed3727"
+#                 tenant_id       = "39327c73-7743-4d89-9607-d01ea0747b9d"
+#                 client_id       = data.azurerm_key_vault_secret.PrometheusClientID.value
+#                 client_secret   = data.azurerm_key_vault_secret.PrometheusClientPassword.value
+#                 port            = 9100
+#                 resource_group  = var.rg_name
+#               }
+#             ]
+#             relabel_configs = [
+#               {
+#                 source_labels = ["__meta_azure_machine_name"]
+#                 target_label  = "instance_name"
+#               },
+#               {
+#                 source_labels = ["__meta_azure_machine_resource_group"]
+#                 target_label  = "resource_group"
+#               },
+#               {
+#                 source_labels = ["__meta_azure_machine_location"]
+#                 target_label  = "region"
+#               }
+#             ]
+#           }
+#         ]
+#       }
+#     }
+#   })
+# }
