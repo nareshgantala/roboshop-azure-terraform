@@ -12,6 +12,26 @@ resource "helm_release" "traefik_ingress" {
   name       = "traefik"
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
+
+  # ప్రొమితియస్ మెట్రిక్స్ ఎనేబుల్ చేయడానికి వాల్యూస్ యాడ్ చేస్తున్నాం
+  values = [
+    yamlencode({
+      metrics = {
+        prometheus = {
+          entryPoint           = "metrics"
+          addEntryPointsLabels = true
+          addServicesLabels    = true
+          
+          # కుబెర్నెటిస్ లో ప్రొమితియస్ ఆపరేటర్ దీని నుండి ఆటోమేటిక్‌గా డేటా లాగడానికి
+          serviceMonitor = {
+            enabled   = true
+            namespace = "monitoring" # నువ్వు ప్రొమితియస్ స్టాక్ ఇన్‌స్టాల్ చేస్తున్న నేమ్‌స్పేస్
+            interval  = "30s"
+          }
+        }
+      }
+    })
+  ]
 }
 
 resource "helm_release" "prometheus_stack" {
