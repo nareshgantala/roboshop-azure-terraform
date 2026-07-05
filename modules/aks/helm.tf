@@ -25,7 +25,7 @@ resource "helm_release" "traefik_ingress" {
           # కుబెర్నెటిస్ లో ప్రొమితియస్ ఆపరేటర్ దీని నుండి ఆటోమేటిక్‌గా డేటా లాగడానికి
           serviceMonitor = {
             enabled   = true
-            namespace = "roboshop-dev" # నువ్వు ప్రొమితియస్ స్టాక్ ఇన్‌స్టాల్ చేస్తున్న నేమ్‌స్పేస్
+            namespace = "default" # నువ్వు ప్రొమితియస్ స్టాక్ ఇన్‌స్టాల్ చేస్తున్న నేమ్‌స్పేస్
             interval  = "30s"
           }
         }
