@@ -27,6 +27,9 @@ resource "helm_release" "traefik_ingress" {
             enabled   = true
             namespace = "default" # నువ్వు ప్రొమితియస్ స్టాక్ ఇన్‌స్టాల్ చేస్తున్న నేమ్‌స్పేస్
             interval  = "30s"
+            additionalLabels = {
+              release = "pstack"
+            }
           }
         }
       }
